@@ -1,12 +1,13 @@
 export interface Label {
   tag: keyof HTMLElementTagNameMap,
-  children?: Label[]
+  children: Label[]
 }
 type LabelRecord = Record<string, Label>
 
 export const labelRecord: LabelRecord = {
   img: {
     tag: "img",
+    children: [],
   },
   div: {
     tag: "div",

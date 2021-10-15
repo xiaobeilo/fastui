@@ -1,6 +1,6 @@
 import EventEmitter from 'eventemitter3'
 import { Role } from '.'
-import { DNode } from './DomModal'
+import { DNode } from './DomModel'
 import { ALlEvents, CSSEvent, DomModelEvent } from './Events'
 
 export default class Message {
@@ -35,7 +35,7 @@ export default class Message {
 }
 
 interface SendArgs {
-  [DomModelEvent.TREE_ADD_CHILD]: [ParentNodeId: string, NodeData: DNode, index: number]
+  [DomModelEvent.TREE_ADD_CHILD]: [ParentNodeId: string, NodeData: DNode, index?: number]
   [DomModelEvent.ADD_CLASS_NAME]: [nodeId: string, className: string]
   [DomModelEvent.REMOVE_CLASS_NAME]: [nodeId: string, className: string]
   [DomModelEvent.SELECT_DOM]: []

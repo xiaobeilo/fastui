@@ -16,19 +16,21 @@ export interface DNode {
 
 
 export default class DomModel {
-  data: DNode = {
-    id: 'root',
-    tag: 'div',
-    children: [],
-    selectors: [],
-    className: [],
-    $el: document.createElement('div')
-  }
+  data: DNode
+  // data: DNode = {
+  //   id: 'root',
+  //   tag: 'div',
+  //   children: [],
+  //   selectors: [],
+  //   className: [],
+  //   $el: document.createElement('div')
+  // }
   treeModel = new TreeModel()
   message: Message
   root
-  constructor(message: Message) {
+  constructor(message: Message, data: DNode) {
     this.message = message
+    this.data = data
     this.root = this.treeModel.parse<DNode>(this.data)
   }
   public listener() {
@@ -38,7 +40,7 @@ export default class DomModel {
     return this.root.first((n) => n.model.id === id)
   }
 
-  addNode(parentNodeId: string, nodeData: DNode, index: number) {
+  addNode(parentNodeId: string, nodeData: DNode, index?: number) {
     const el = document.createElement(nodeData.tag)
     const id = `node-${uniqid.process()}`
     const node = this.treeModel.parse<DNode>({
