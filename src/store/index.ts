@@ -1,38 +1,15 @@
-import { createContext, CSSProperties } from "react";
-import { action, observable } from 'mobx'
+import { action, observable, computed, makeAutoObservable } from 'mobx'
+import TreeModel from 'tree-model/types';
+import Transfer, { Role } from '../Transfer';
 import { DNode } from "../Transfer/DomModel";
-import Transfer, { Role } from "../Transfer";
 
-// interface Store {
-//   curDOM: DNode | null;
-//   curDomId: string | undefined;
-//   cssPopupVisible: boolean;
-//   curSelectorName: string;
-//   curSelector: CSSProperties
-// }
-
-// export class TransferStore {
-//   public transfer: Transfer = new Transfer(Role.main)
-//   public curDomId: string = ''
-//   // @observable
-//   // curDOM: DNode | null;
-//   // curDomId: string | undefined;
-//   // cssPopupVisible: boolean;
-//   // curSelectorName: string;
-//   // curSelector: CSSProperties
-//   @action
-//   public setDomId(id: string) {
-//     this.curDomId = id
-//   }
-// }
-
-export const domModelData = observable<DNode>({
+const domModelData = observable<DNode>({
   id: 'root',
   tag: 'div',
   children: [],
   selectors: [],
   className: [],
-  $el: document.createElement('div')
+  ref: document.createElement('div')
 })
 
 export const curDOM = observable<{ id: string, ref: HTMLElement | null }>({
@@ -40,9 +17,31 @@ export const curDOM = observable<{ id: string, ref: HTMLElement | null }>({
   ref: null
 })
 
+class CurrentDOM {
+  id: string = '';
+  constructor() {
+    makeAutoObservable(this, {
+      id: observable,
+      ref: computed,
+      dNode: computed,
+      setDOMId: action
+    })
+  }
+  get dNode(): TreeModel.Node<DNode> | undefined {
+    return allStore.transfer.domModel.root.first(n => n.model.id === this.id)
+  }
+  get ref(): HTMLElement | undefined {
+    return this.dNode?.ref
+  }
+  setDOMId(id: string) {
+    this.id = id
+  }
+}
+
 export const allStore = {
   domModelData,
-  curDOM
+  currentDOM: new CurrentDOM(),
+  transfer: new Transfer(Role.main, domModelData)
 }
 
 export type AllStore = typeof allStore

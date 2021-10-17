@@ -8,7 +8,7 @@ export interface DNode {
   id: string;
   tag: 'p' | 'div' | 'span',
   children?: DNode[],
-  $el: HTMLElement
+  ref: HTMLElement
   selectors: string[],
   className: string[]
 }
@@ -46,7 +46,7 @@ export default class DomModel {
     const node = this.treeModel.parse<DNode>({
       ...nodeData,
       id: nodeData.id || id,
-      $el: el
+      ref: el
     })
     const parentNode = this.root.first(n => n.model.id === parentNodeId)
     if (index) {
