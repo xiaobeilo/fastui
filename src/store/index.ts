@@ -12,11 +12,6 @@ const domModelData = observable<DNode>({
   ref: document.createElement('div')
 })
 
-export const curDOM = observable<{ id: string, ref: HTMLElement | null }>({
-  id: '',
-  ref: null
-})
-
 class CurrentDOM {
   id: string = '';
   constructor() {

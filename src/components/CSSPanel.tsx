@@ -1,13 +1,22 @@
-import { Breadcrumb, Form, Menu } from 'antd'
-
+import { Breadcrumb, Button, Form, Input, Menu, Space, Tag } from 'antd'
 import { ReactElement, useEffect, useState } from 'react'
 import { useStore } from '../hooks/useContext'
+import { EditOutlined } from '@ant-design/icons'
+import { observer } from 'mobx-react'
 
-export const CSSPanel = (): ReactElement => {
-	const { currentDOM } = useStore()
+export const CSSPanel = observer((): ReactElement => {
+	const { currentDOM, transfer } = useStore()
 	const [curSelectors, setCurSelectors] = useState<string[]>([])
-	const allSelectors: string[][] =
-		currentDOM.dNode?.getPath().map((item) => item.model.className || []) || []
+	const [className, setClassName] = useState('')
+	const [allSelectors, setAllSelectors] = useState<string[][]>([])
+
+	useEffect(() => {
+		console.log(currentDOM, 1231)
+		setAllSelectors(
+			currentDOM.dNode?.getPath().map((item) => item.model.className || []) ||
+				[]
+		)
+	}, [currentDOM.id])
 
 	useEffect(() => {
 		const reset = true
@@ -20,6 +29,12 @@ export const CSSPanel = (): ReactElement => {
 		)
 	}, [allSelectors])
 
+	const addClassName = () => {
+		if (!className) return
+		transfer.domModel.addClassName(currentDOM.id, className)
+		setClassName('')
+	}
+
 	return (
 		<div>
 			<Form>
@@ -28,6 +43,7 @@ export const CSSPanel = (): ReactElement => {
 						{curSelectors.map((item, index) => {
 							return (
 								<Breadcrumb.Item
+									key={index}
 									overlay={
 										allSelectors[index].length > 1 ? (
 											<Menu>
@@ -45,8 +61,33 @@ export const CSSPanel = (): ReactElement => {
 							)
 						})}
 					</Breadcrumb>
+					<EditOutlined />
+				</Form.Item>
+
+				<Form.Item>
+					{currentDOM.dNode?.model.className.map((c: string) => (
+						<Tag
+							closable
+							key={c}
+							onClose={() => {
+								transfer.domModel.removeClassName(currentDOM.id, c)
+							}}
+						>
+							{c}
+						</Tag>
+					))}
+				</Form.Item>
+				<Form.Item>
+					<Space>
+						<Input
+							placeholder="请输入class"
+							value={className}
+							onChange={(e) => setClassName(e.target.value)}
+						></Input>
+						<Button onClick={addClassName}>添加</Button>
+					</Space>
 				</Form.Item>
 			</Form>
 		</div>
 	)
-}
+})

@@ -13,6 +13,10 @@ export interface DNode {
   className: string[]
 }
 
+interface TreeModelNode {
+  model: DNode
+}
+
 
 
 export default class DomModel {
@@ -33,11 +37,11 @@ export default class DomModel {
     this.data = data
     this.root = this.treeModel.parse<DNode>(this.data)
   }
-  public listener() {
-    this.message.receive(DomModelEvent.TREE_ADD_CHILD, this.addNode)
-  }
-  private getNode(id: string): Node<DNode> | undefined {
-    return this.root.first((n) => n.model.id === id)
+  // public listener() {
+  //   this.message.receive(DomModelEvent.TREE_ADD_CHILD, this.addNode)
+  // }
+  private getNode(id: string): TreeModelNode | undefined {
+    return this.root.first((n) => n.model.id === id) as unknown as TreeModelNode
   }
 
   addNode(parentNodeId: string, nodeData: DNode, index?: number) {
@@ -46,7 +50,8 @@ export default class DomModel {
     const node = this.treeModel.parse<DNode>({
       ...nodeData,
       id: nodeData.id || id,
-      ref: el
+      ref: el,
+      className: []
     })
     const parentNode = this.root.first(n => n.model.id === parentNodeId)
     if (index) {
@@ -54,25 +59,23 @@ export default class DomModel {
     } else {
       parentNode?.addChild(node)
     }
-    this.message.send(DomModelEvent.TREE_ADD_CHILD, parentNodeId, {
-      ...nodeData, id
-    }, index)
+    this.message.send(DomModelEvent.TREE_ADD_CHILD, parentNodeId, { ...nodeData, id }, index)
   }
 
   addClassName(nodeId: string, className: string) {
     const node = this.getNode(nodeId)
-    if (!node?.model.className.includes(className)) {
-      node?.model.className.push(className)
+    if (node && !node.model.className.includes(className)) {
+      node.model.className.push(className);
+      node.model.ref.className = cx(node?.model.className)
+      this.message.send(DomModelEvent.ADD_CLASS_NAME, nodeId, className)
     }
-    (node?.model.$el as HTMLElement).className = cx(node?.model.className)
-    this.message.send(DomModelEvent.ADD_CLASS_NAME, nodeId, className)
   }
 
   removeClassName(nodeId: string, className: string) {
     const node = this.getNode(nodeId)
     if (node) {
       node.model.className = node.model.className.filter((c: string) => c !== className)
-      node.model.$el.className = cx(node.model.className)
+      node.model.ref.className = cx(node.model.className)
       this.message.send(DomModelEvent.REMOVE_CLASS_NAME, nodeId, className)
     }
   }

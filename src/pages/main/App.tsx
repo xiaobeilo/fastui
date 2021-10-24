@@ -1,11 +1,10 @@
-import { useState } from 'react'
-import logo from './logo.svg'
 import './App.css'
 import { Card, Layout } from 'antd'
 import { StoreContext } from '../../context/transferContext'
 import { Labels } from '../../components/Labels'
 import { DOMLayout } from '../../components/DOMLayout'
 import { allStore } from '../../store'
+import { CSSPanel } from '../../components/CSSPanel'
 const { Sider, Content, Footer } = Layout
 
 function App() {
@@ -29,7 +28,9 @@ function App() {
 						></iframe>
 					</Card>
 				</Content>
-				<Sider>props</Sider>
+				<Sider style={{ background: '#fff' }}>
+					<CSSPanel></CSSPanel>
+				</Sider>
 				<Footer>Footer</Footer>
 			</Layout>
 		</StoreContext.Provider>
