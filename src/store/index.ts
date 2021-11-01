@@ -1,4 +1,4 @@
-import { action, observable, computed, makeAutoObservable } from 'mobx'
+import { action, observable, computed, makeAutoObservable, makeObservable, toJS } from 'mobx'
 import TreeModel from 'tree-model/types';
 import Transfer, { Role } from '../Transfer';
 import { DNode } from "../Transfer/DomModel";
@@ -33,9 +33,23 @@ class CurrentDOM {
   }
 }
 
+class GlobalStore {
+  cssPanelViable: boolean = false;
+  constructor() {
+    makeObservable(this, {
+      cssPanelViable: observable,
+      setCSSPanelViable: action
+    })
+  }
+  setCSSPanelViable(visible?: boolean) {
+    this.cssPanelViable = visible ?? !this.cssPanelViable
+  }
+}
+
 export const allStore = {
   domModelData,
   currentDOM: new CurrentDOM(),
+  globalStore: new GlobalStore(),
   transfer: new Transfer(Role.main, domModelData)
 }
 

@@ -1,6 +1,6 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
-import vitePluginImport from 'vite-plugin-babel-import';
+// import vitePluginImport from 'vite-plugin-babel-import';
 import path from 'path'
 
 // https://vitejs.dev/config/
@@ -13,16 +13,16 @@ export default defineConfig({
         }
       }
     }),
-    vitePluginImport([
-      {
-        libraryName: 'antd',
-        libraryDirectory: 'es',
-        ignoreStyles: [],
-        style(name) {
-          return `antd/lib/${name}/style/index.css`;
-        },
-      },
-    ])
+    // vitePluginImport([
+    //   {
+    //     libraryName: 'antd',
+    //     libraryDirectory: 'es',
+    //     ignoreStyles: [],
+    //     style(name) {
+    //       return `antd/lib/${name}/style/index.css`;
+    //     },
+    //   },
+    // ])
   ],
   root: path.resolve(__dirname, 'src'),
   resolve: {
