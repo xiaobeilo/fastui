@@ -1,25 +1,37 @@
-import { Row, Col, CheckBox, Select } from 'antd'
-import { LengthUnits } from '../../defined/type'
+import { Row, Col, Checkbox, Select, Input, Slider } from 'antd'
+import { useState } from 'react'
+import {
+	LengthUnit,
+	lengthUnits,
+	LengthUnits,
+	SemanticsValue,
+	semanticsValues,
+	SemanticsValues,
+} from '../../defined/type'
 const { Option } = Select
 
 type Props = {
-  units: LengthUnits[]
+	units: LengthUnits | SemanticsValues
 }
 
-export const Value = (props) => {
-	const [value, setValue] = useState<number>(0)
-	const [unit, setUnit] = useState<LengthUnits>(LengthUnits.PX)
-  const formatValue:string = value.toString() + unit;
+export const Value = (props: Props) => {
+	const [value, setValue] = useState<string>('')
+
+	const selectUnit = (unit: any) => {
+		if (lengthUnits.some((v) => v === unit)) {
+			setValue(value + unit)
+		} else if (semanticsValues.some((v) => v === unit)) {
+			setValue(unit)
+		}
+	}
 
 	const unitComponent = (
-		<Select>
-      {
-        [LengthUnits.PX, LengthUnits.]
-      }
-			<Option value="px">px</Option>
-			<Option value="rem">rem</Option>
-			<Option value="%">%</Option>
-			<Option value="auto">auto</Option>
+		<Select onChange={selectUnit}>
+			{props.units.map((unit) => (
+				<Option key={unit} value={unit}>
+					{unit}
+				</Option>
+			))}
 		</Select>
 	)
 
@@ -27,23 +39,44 @@ export const Value = (props) => {
 		<>
 			<Row>
 				<Col>
-					<CheckBox></CheckBox>
+					<Checkbox></Checkbox>
 				</Col>
 				<Col>
 					<Input
-						value={formatValue}
+						value={value}
 						onChange={(e) => setValue(e.target.value)}
 						addonAfter={unitComponent}
 					></Input>
 				</Col>
 			</Row>
-			<Slider value={}></Slider>
+			<Slider value={parseFloat(value)}></Slider>
 		</>
 	)
 }
 
+/**
+ * width / height
+ */
 export const Width = () => {
-  const units:Omit<LengthUnits, LengthUnits.VH> = [LengthUnits.PX]
+	const units = [
+		LengthUnit.PX,
+		LengthUnit.REM,
+		LengthUnit.PERCENT,
+		LengthUnit.VW,
+		SemanticsValue.AUTO,
+	]
 
-  return <Value units={units}/>
+	return <Value units={units} />
+}
+
+export const Height = () => {
+	const units = [
+		LengthUnit.PX,
+		LengthUnit.REM,
+		LengthUnit.PERCENT,
+		LengthUnit.VH,
+		SemanticsValue.AUTO,
+	]
+
+	return <Value units={units} />
 }
