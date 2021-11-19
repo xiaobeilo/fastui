@@ -8,6 +8,7 @@ export enum LengthUnit {
 }
 
 export const lengthUnits = [
+  LengthUnit.PX,
   LengthUnit.EM,
   LengthUnit.REM,
   LengthUnit.VW,

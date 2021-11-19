@@ -34,7 +34,7 @@ class CurrentDOM {
 }
 
 class GlobalStore {
-  cssPanelViable: boolean = false;
+  cssPanelViable: boolean = true;
   constructor() {
     makeObservable(this, {
       cssPanelViable: observable,
