@@ -22,6 +22,7 @@ export enum SemanticsValue {
   AUTO = 'auto',
   INHERIT = 'inherit'
 }
+
 export const semanticsValues = [
   SemanticsValue.AUTO,
   SemanticsValue.INHERIT

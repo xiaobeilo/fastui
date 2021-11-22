@@ -17,36 +17,25 @@ type Props = {
 	name: 'width' | 'height'
 	defaultValue: SemanticsValue
 	defaultUnit: LengthUnit
-	sliderMarks: Partial<Record<LengthUnit, SliderMarks>>
+	sliderMarks: Partial<Record<LengthUnit | SemanticsValue, SliderMarks>>
 }
 
 export const Value = (props: Props) => {
 	const [value, setValue] = useState<string>(props.defaultValue)
-	const [unit, setUnit] = useState<LengthUnit>(props.defaultUnit)
-
-	const selectUnit = (unit: any) => {
-		if (lengthUnits.some((v) => v === unit)) {
-			setValue(parseFloat(value) + unit)
-			setUnit(unit)
-		} else if (semanticsValues.some((v) => v === unit)) {
-			setValue(unit)
-		}
-	}
-
-	const unitComponent = (
-		<Select
-			onChange={selectUnit}
-			value={unit}
-			disabled={semanticsValues.includes(value as SemanticsValue)}
-		>
-			{props.units.map((unit) => (
-				<Option key={unit} value={unit}>
-					{unit}
-				</Option>
-			))}
-		</Select>
+	const [unit, setUnit] = useState<LengthUnit | SemanticsValue>(
+		props.defaultUnit
 	)
 
+	const selectUnit = (unit: LengthUnit | SemanticsValue) => {
+		if (lengthUnits.some((v) => v === unit)) {
+			const numberValue = isNaN(parseFloat(value)) ? 0 : parseFloat(value)
+			setValue(numberValue + unit)
+			setUnit(unit as LengthUnit)
+		} else if (semanticsValues.some((v) => v === unit)) {
+			setValue(unit)
+			setUnit(unit)
+		}
+	}
 	return (
 		<>
 			<Row>
@@ -61,17 +50,17 @@ export const Value = (props: Props) => {
 							if (unit) setUnit(unit as LengthUnit)
 							setValue(e.target.value)
 						}}
-						addonAfter={unitComponent}
+						// addonAfter={unitComponent}
 					></Input>
 				</Col>
 			</Row>
 			<Row>
 				<Col>
-					{semanticsValues.map((v) => (
+					{props.units.map((v) => (
 						<Tag
-							onClick={() => setValue(v)}
+							onClick={() => selectUnit(v)}
 							key={v}
-							color={v === value ? 'blue' : 'default'}
+							color={v === unit ? 'blue' : 'default'}
 						>
 							{v}
 						</Tag>
@@ -104,6 +93,17 @@ export const Width = () => {
 			0: '0px',
 			100: '100px',
 			375: '375px',
+		},
+		[LengthUnit.PX]: {
+			0: '0rem',
+			0.15: '.15rem',
+			0.3: '.3rem',
+			1: '1rem',
+		},
+		[LengthUnit.VW]: {
+			0: '0vw',
+			50: '50vw',
+			100: '100vw',
 		},
 		[LengthUnit.PERCENT]: {
 			0: '0%',
