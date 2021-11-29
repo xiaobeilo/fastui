@@ -14,7 +14,8 @@ const { Option } = Select
 
 type Props = {
 	units: (LengthUnit | SemanticsValue)[]
-	name: 'width' | 'height'
+	name: string
+	// name: 'width' | 'height' | 'position-x' | 'position-y'
 	defaultValue: SemanticsValue
 	defaultUnit: LengthUnit
 	sliderMarks: Partial<Record<LengthUnit | SemanticsValue, SliderMarks>>
@@ -149,6 +150,37 @@ export const Height = () => {
 			name="height"
 			units={units}
 			defaultValue={SemanticsValue.AUTO}
+			defaultUnit={LengthUnit.PX}
+			sliderMarks={marks}
+		/>
+	)
+}
+
+export const BackgroundPosition = (props: {dir: 'x' |'y'}) => {
+	const units = [
+		LengthUnit.PX,
+		LengthUnit.PERCENT,
+		SemanticsValue.AUTO,
+		SemanticsValue.CENTER
+	]
+
+	const marks = {
+		[LengthUnit.PX]: {
+			0: '0px',
+			100: '0px',
+			375: '375px',
+		},
+		[LengthUnit.PERCENT]: {
+			0: '0%',
+			50: '50%',
+			100: '100%',
+		},
+	}
+	return (
+		<Value
+			name={'position' + props.dir}
+			units={units}
+			defaultValue={SemanticsValue.CENTER}
 			defaultUnit={LengthUnit.PX}
 			sliderMarks={marks}
 		/>

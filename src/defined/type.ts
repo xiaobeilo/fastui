@@ -20,12 +20,14 @@ export type LengthUnits = typeof lengthUnits
 
 export enum SemanticsValue {
   AUTO = 'auto',
-  INHERIT = 'inherit'
+  INHERIT = 'inherit',
+  CENTER = 'center'
 }
 
 export const semanticsValues = [
   SemanticsValue.AUTO,
-  SemanticsValue.INHERIT
+  SemanticsValue.INHERIT,
+  SemanticsValue.CENTER
 ]
 
 export type SemanticsValues = typeof semanticsValues
